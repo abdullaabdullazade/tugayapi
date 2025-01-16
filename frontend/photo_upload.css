@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 
 * {
   margin: 0;
@@ -9,9 +9,9 @@
 }
 
 .container {
-  height: 100vh;
+  height: 50vh;
   width: 100%;
-  align-items: center;
+  margin-top: 100px;
   display: flex;
   justify-content: center;
   background-color: #fcfcfc;
@@ -29,7 +29,6 @@
 .card h3 {
   font-size: 22px;
   font-weight: 600;
-  
 }
 
 .drop_box {
@@ -66,7 +65,7 @@
   transition: 0.3s;
 }
 
-.btn:hover{
+.btn:hover {
   text-decoration: none;
   background-color: #ffffff;
   color: #005af0;
@@ -82,4 +81,47 @@
   outline: none;
   padding: 12px 20px;
   border-radius: 4px;
+}
+
+#photoList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+}
+
+.photo-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.photo-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.photo-item span {
+  flex: 1;
+  font-size: 16px;
+  color: #333;
+}
+
+.photo-item button {
+  padding: 5px 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.photo-item button:hover {
+  background-color: #d32f2f;
 }
