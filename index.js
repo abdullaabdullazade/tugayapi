@@ -9,9 +9,7 @@ const cors = require("cors");
 const app = express();
 
 mongoose
-  .connect(
-    "mongodb+srv://rfolessons2:I1JYTDqTJil1UDzA@abdullaxows.7uu95.mongodb.net/backend"
-  )
+  .connect("mongodb://localhost:27017/backend")
   .then(() => {
     console.log("MongoDB connected");
   })
@@ -19,40 +17,38 @@ mongoose
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static("frontend"));
-//app.use(cors());
+app.use(cors());
 app.get("/", (req, res) => {
   const token = req.cookies.authToken;
+  app.use(express.static("frontend"));
+
   if (token) {
-    jwt.verify(token, "secret_key", (err, user) => {
+    jwt.verify(token, "tugayows", (err, decoded) => {
       if (err) {
         return res.sendFile(path.join(__dirname, "frontend/index.html"));
+      } else {
+        return res.sendFile(path.join(__dirname, "frontend/photo_upload.html"));
       }
-      return res.sendFile(path.join(__dirname, "frontend/protected.html"));
     });
   } else {
-    res.sendFile(path.join(__dirname, "frontend/index.html"));
+    return res.sendFile(path.join(__dirname, "frontend/index.html"));
   }
-});
-
-app.get("/file_upload", (req, res) => {
-  return res.sendFile(path.join(__dirname, "frontend/photo_upload.html"));
 });
 
 app.post("/signup", async (req, res) => {
   const { email, password } = req.body;
-
+  console.log(email);
   try {
     const existingUser = await user.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "email already exists" });
+      return res.status(400).json({ message: "Email already exists" });
     }
-
+    console.log(email, password);
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new user({ email, password: hashedPassword });
     await newUser.save();
-
+    console.log("ha");
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error creating user", error });
@@ -60,11 +56,11 @@ app.post("/signup", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  console.log("hello");
   const { email, password } = req.body;
-  console.log(email, password);
+
   try {
     const finduser = await user.findOne({ email });
+
     if (!finduser) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
@@ -76,37 +72,20 @@ app.post("/login", async (req, res) => {
 
     const token = jwt.sign(
       { id: finduser._id, email: finduser.email },
-      "secret_key",
-      {
-        expiresIn: "1h",
-      }
+      "tugayows",
+      { expiresIn: "1h" }
     );
 
     res.cookie("authToken", token, {
       maxAge: 3600000,
-      sameSite: "None",
-      secure: true,
+      httpOnly: true,
+      secure: false,
     });
 
     res.status(200).json({ message: "Login successful" });
   } catch (error) {
     res.status(500).json({ message: "Error logging in", error });
   }
-});
-
-function authenticateToken(req, res, next) {
-  const token = req.cookies.authToken;
-  if (!token) return res.status(401).json({ message: "Not authenticated" });
-
-  jwt.verify(token, "secret_key", (err, user) => {
-    if (err) return res.status(403).json({ message: "Invalid token" });
-    req.user = user;
-    next();
-  });
-}
-
-app.get("/protected", authenticateToken, (req, res) => {
-  res.json({ message: "This is a protected route", user: req.user });
 });
 
 app.listen(3000, () => {
