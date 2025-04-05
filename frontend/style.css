@@ -162,10 +162,10 @@ form .btn .btn-layer {
   left: -100%;
   background: -webkit-linear-gradient(
     right,
+    #0073e6,
     #003366,
     #004080,
     #0059b3,
-    #0073e6
   );
   border-radius: 15px;
   transition: all 0.4s ease;
